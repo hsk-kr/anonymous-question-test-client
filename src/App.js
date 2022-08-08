@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import { useState } from "react";
+
+import Entry from "./components/Entry";
+import Main from "./components/Main";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [screen, setScreen] = useState("entry");
+  const [apiUrl, setApiUrl] = useState("");
+  const [nickname, setNickname] = useState("");
+
+  const handleMessageSend = ({ question }) => {
+    axios.post(`${apiUrl}/api/questions`, { nickname, question });
+  };
+
+  switch (screen) {
+    case "entry":
+      return (
+        <Entry
+          onSubmit={({ address, nickname }) => {
+            setApiUrl(address);
+            setNickname(nickname);
+            setScreen("main");
+          }}
+        />
+      );
+    case "main":
+    default:
+      return <Main onSubmit={handleMessageSend} />;
+  }
 }
 
 export default App;
